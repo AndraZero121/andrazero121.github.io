@@ -3,278 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diandra Anursa Syabandira - Backend Developer</title>
+    <title>Diandra Anursa Syabandira - Backend & API Developer</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        /* --- Base & Pointer Style --- */
         body {
-            font-family: 'Space Grotesk', sans-serif;
-            background-color: #0F172A; /* Warna dasar biru tua keabuan */
-            color: #E2E8F0; /* Teks putih keabuan */
+            font-family: 'Inter', sans-serif;
+            background-color: #0B1120;
+            color: #b0c4de;
             overflow-x: hidden;
-            cursor: default; /* Kembali ke cursor default untuk stabilitas */
+            cursor: none;
         }
-        
+        .font-heading { font-family: 'Space Grotesk', sans-serif; }
+        .cursor-dot, .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+            transition: all 0.15s ease-out;
+        }
+        .cursor-dot { width: 8px; height: 8px; background-color: #22D3EE; }
+        .cursor-outline { width: 40px; height: 40px; border: 2px solid rgba(34, 211, 238, 0.5); }
+        .cursor-outline.hover { transform: translate(-50%, -50%) scale(1.5); background-color: rgba(34, 211, 238, 0.1); }
+
+        /* --- UI Component Style --- */
+        #three-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
         .text-gradient {
-            background: linear-gradient(45deg, #38BDF8, #6366F1, #A78BFA);
+            background: linear-gradient(90deg, #22D3EE, #A78BFA);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
-        .glass-effect {
-            background: rgba(30, 41, 59, 0.5); /* Warna glass lebih gelap */
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(51, 65, 85, 0.5);
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid #1e293b;
             transition: all 0.3s ease;
         }
-        
-        .glass-effect:hover {
-            border-color: rgba(56, 189, 248, 0.4);
-            transform: translateY(-5px);
-        }
-
+        .glass-card:hover { transform: translateY(-8px); border-color: #22D3EE; }
         .navbar {
             backdrop-filter: blur(10px);
-            background: rgba(15, 23, 42, 0.8);
-            border-bottom: 1px solid #1E293B;
-            transition: all 0.3s ease;
+            background: rgba(11, 17, 32, 0.7);
+            border-bottom: 1px solid #1e293b;
         }
-        
-        .typing-effect::after {
-            content: '_';
-            animation: blink 1s infinite;
-            color: #38BDF8; /* Warna cyan */
-        }
-        
-        @keyframes blink {
-            50% { opacity: 0; }
-        }
-        
-        .skill-bar {
-            background: #1E293B; /* Latar skill bar */
-            border-radius: 10px;
-            overflow: hidden;
-            height: 10px;
-        }
-        
+        .skill-bar { background: #1e293b; border-radius: 5px; height: 8px; }
         .skill-progress {
             height: 100%;
-            background: linear-gradient(90deg, #A78BFA, #38BDF8);
-            border-radius: 10px;
+            background: #22D3EE;
+            border-radius: 5px;
             transform-origin: left;
-            transform: scaleX(0); /* Awalnya 0, dianimasikan dengan GSAP */
+            transform: scaleX(0);
         }
-        
-        .project-card {
-            border: 1px solid #1E293B;
-            background: #1E293B;
-            transition: all 0.3s ease;
+        .tag {
+            display: inline-block;
+            background-color: rgba(34, 211, 238, 0.1);
+            color: #22D3EE;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
         }
-        
-        .project-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            border-color: #38BDF8;
-        }
-
-        .social-icon:hover {
-            transform: scale(1.2);
-            color: #38BDF8;
-            transition: all 0.3s ease;
-        }
-        
         html { scroll-behavior: smooth; }
-        
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0F172A; }
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
-
+        ::-webkit-scrollbar-track { background: #0B1120; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
     </style>
 </head>
 <body class="antialiased">
     
-    <nav class="navbar fixed top-0 w-full z-50 px-6 py-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="#home" class="text-xl font-bold flex items-center gap-2">
-                <span class="text-2xl text-cyan-400"><i class="fas fa-terminal"></i></span>
-                <span class="text-gradient">Diandra Anursa</span>
-            </a>
-            <div class="hidden md:flex space-x-8 text-slate-300">
-                <a href="#about" class="hover:text-cyan-400 transition-colors">About</a>
-                <a href="#skills" class="hover:text-cyan-400 transition-colors">Skills</a>
-                <a href="#projects" class="hover:text-cyan-400 transition-colors">Projects</a>
-                <a href="#contact" class="hover:text-cyan-400 transition-colors">Contact</a>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+    <canvas id="three-bg"></canvas>
+
+    <nav class="navbar fixed top-0 w-full z-50 transition-all duration-300">
+        <div class="container mx-auto flex justify-between items-center px-6 py-4">
+            <a href="#home" class="interactive font-heading text-xl font-bold text-slate-200">Diandra.dev</a>
+            <div class="hidden md:flex items-center space-x-8 text-slate-300">
+                <a href="#about" class="interactive hover:text-cyan-300 transition-colors">About</a>
+                <a href="#services" class="interactive hover:text-cyan-300 transition-colors">Services</a>
+                <a href="#projects" class="interactive hover:text-cyan-300 transition-colors">Projects</a>
+                <a href="mailto:diandraanursa@gmail.com" class="interactive bg-slate-800 hover:bg-slate-700 border border-slate-700 px-4 py-2 rounded-md transition-colors">Contact</a>
             </div>
         </div>
     </nav>
     
     <main>
-        <section id="home" class="min-h-screen flex items-center justify-center relative px-4">
-            <div class="container mx-auto text-center">
-                <h1 class="text-4xl md:text-6xl font-bold mb-4" data-aos="fade-up">
-                    Hi, I'm <span class="text-gradient">Diandra</span>
+        <section id="home" class="min-h-screen flex items-center justify-center text-center relative px-4">
+            <div class="max-w-3xl mx-auto">
+                <h1 class="font-heading text-4xl md:text-6xl lg:text-7xl font-bold text-slate-100 animate__animated animate__fadeInDown">
+                    Membangun Fondasi Digital yang Kokoh.
                 </h1>
-                <div class="text-xl md:text-2xl mb-8 h-8" id="typingText" data-aos="fade-up" data-aos-delay="200">
-                    </div>
-                <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto text-slate-400" data-aos="fade-up" data-aos-delay="400">
-                    Saya merancang dan membangun tulang punggung aplikasi—API yang andal, database yang efisien, dan logika server yang *scalable*.
+                <p class="text-lg md:text-xl mt-6 max-w-2xl mx-auto text-slate-400 animate__animated animate__fadeInUp animate__delay-1s">
+                    Saya Diandra, seorang Backend Developer yang berfokus pada arsitektur **API yang *performant*** dan **sistem *server-side* yang *scalable***. Kode saya adalah jembatan antara ide brilian Anda dan realisasi produk digital yang andal.
                 </p>
-                <div data-aos="fade-up" data-aos-delay="600">
-                    <a href="#projects" class="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-3 rounded-md font-semibold transition-all">
-                        Lihat Proyek Saya
+                <div class="mt-10 animate__animated animate__zoomIn animate__delay-2s">
+                    <a href="#projects" class="interactive bg-cyan-400 hover:bg-cyan-500 text-slate-900 px-8 py-3 rounded-md font-bold transition-all shadow-lg shadow-cyan-500/20">
+                        Jelajahi Proyek Saya
                     </a>
                 </div>
             </div>
         </section>
 
-        <section id="about" class="py-20">
+        <section id="about" class="py-24">
             <div class="container mx-auto px-6">
-                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12" data-aos="fade-up">
-                    <span class="text-gradient">Tentang Saya</span>
-                </h2>
-                <div class="glass-effect max-w-4xl mx-auto rounded-lg p-8 grid md:grid-cols-3 gap-8 items-center" data-aos="fade-up">
-                    <div class="md:col-span-2">
-                        <h3 class="text-2xl font-bold mb-4 text-cyan-400">Backend Developer</h3>
-                        <p class="text-slate-300 leading-relaxed">
-                            Sejak memulai perjalanan *coding* pada tahun 2020, saya menemukan *passion* dalam membangun logika kompleks di sisi server. Keahlian utama saya adalah **PHP** dan **Laravel** untuk menciptakan sistem backend yang solid dan terstruktur. Saya menikmati proses memecahkan masalah, mengoptimalkan performa database, dan merancang arsitektur API yang bersih.
+                <div class="grid md:grid-cols-5 gap-12 items-center">
+                    <div class="md:col-span-2" data-aos="fade-right">
+                        <img src="https://i.pravatar.cc/500?u=diandra" alt="Foto Diandra Anursa" class="rounded-lg w-full h-auto border-4 border-slate-800">
+                    </div>
+                    <div class="md:col-span-3" data-aos="fade-left">
+                        <h2 class="font-heading text-3xl font-bold text-gradient mb-4">Dari Logika ke Realita.</h2>
+                        <p class="mb-4 leading-relaxed">
+                            Perjalanan saya di dunia pemrograman dimulai dari rasa penasaran murni: bagaimana sebuah aplikasi benar-benar bekerja di balik layar? Ini membawa saya mendalami dunia backend, di mana saya menemukan kegembiraan dalam merancang sistem yang efisien dan logis.
                         </p>
-                        <p class="mt-4 text-slate-300 leading-relaxed">
-                            Meskipun fokus utama saya di backend, saya juga memiliki pemahaman yang baik tentang teknologi frontend seperti **JavaScript** dan **Vue.js** untuk memastikan integrasi yang mulus antara *server* dan *client*.
+                        <p class="mb-6 leading-relaxed">
+                            Dengan spesialisasi di **PHP** dan framework **Laravel**, saya mengubah tantangan bisnis yang kompleks menjadi solusi teknis yang elegan. Bagi saya, *coding* bukan hanya tentang menulis fungsi, tetapi tentang membangun sistem yang berkelanjutan, aman, dan siap untuk berkembang.
                         </p>
-                    </div>
-                    <div class="text-center">
-                        <img src="https://i.pravatar.cc/150?u=diandra" alt="Diandra Anursa" class="rounded-full w-32 h-32 mx-auto border-4 border-slate-700">
-                        <div class="flex justify-center space-x-5 mt-5">
-                            <a href="https://github.com/AndraZero121" class="social-icon text-2xl text-slate-400"><i class="fab fa-github"></i></a>
-                            <a href="https://www.linkedin.com/in/diandraanursa/" class="social-icon text-2xl text-slate-400"><i class="fab fa-linkedin"></i></a>
-                            <a href="https://www.instagram.com/andrazero121/" class="social-icon text-2xl text-slate-400"><i class="fab fa-instagram"></i></a>
+                         <div class="flex space-x-4">
+                            <a href="https://github.com/AndraZero121" class="interactive social-icon text-2xl text-slate-400 hover:text-cyan-300"><i class="fab fa-github"></i></a>
+                            <a href="https://www.linkedin.com/in/diandraanursa/" class="interactive social-icon text-2xl text-slate-400 hover:text-cyan-300"><i class="fab fa-linkedin"></i></a>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="skills" class="py-20 bg-slate-900">
+        <section id="services" class="py-24 bg-slate-900/70">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="font-heading text-3xl font-bold text-gradient mb-2" data-aos="fade-up">Layanan Utama Saya</h2>
+                <p class="max-w-2xl mx-auto text-slate-400 mb-12" data-aos="fade-up" data-aos-delay="100">Saya menyediakan keahlian teknis untuk mewujudkan berbagai kebutuhan digital Anda.</p>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="glass-card p-8 rounded-lg" data-aos="fade-up" data-aos-delay="200">
+                        <i class="fas fa-bolt text-3xl text-cyan-400 mb-4"></i>
+                        <h3 class="font-heading text-xl font-bold text-slate-100 mb-2">Pengembangan API</h3>
+                        <p class="text-sm">Merancang dan membangun RESTful API yang cepat, aman, dan mudah diintegrasikan dengan aplikasi frontend atau layanan pihak ketiga.</p>
+                    </div>
+                    <div class="glass-card p-8 rounded-lg" data-aos="fade-up" data-aos-delay="300">
+                        <i class="fas fa-database text-3xl text-cyan-400 mb-4"></i>
+                        <h3 class="font-heading text-xl font-bold text-slate-100 mb-2">Arsitektur Database</h3>
+                        <p class="text-sm">Mendesain skema database yang optimal, melakukan normalisasi, dan mengelola kueri untuk performa maksimal.</p>
+                    </div>
+                    <div class="glass-card p-8 rounded-lg" data-aos="fade-up" data-aos-delay="400">
+                        <i class="fas fa-shield-halved text-3xl text-cyan-400 mb-4"></i>
+                        <h3 class="font-heading text-xl font-bold text-slate-100 mb-2">Sistem Backend Kustom</h3>
+                        <p class="text-sm">Membangun logika bisnis, otentikasi, dan sistem manajemen konten (CMS) dari nol sesuai kebutuhan unik proyek Anda.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="projects" class="py-24">
             <div class="container mx-auto px-6">
-                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12" data-aos="fade-up">
-                    <span class="text-gradient">Teknologi yang Saya Kuasai</span>
-                </h2>
-                <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                    <div class="glass-effect rounded-lg p-8" data-aos="fade-up">
-                        <h3 class="text-2xl font-bold mb-6 text-cyan-400"><i class="fas fa-server mr-3"></i>Backend</h3>
-                        <div class="space-y-5">
-                            <div>
-                                <div class="flex justify-between mb-1 text-slate-300"><span>PHP & Laravel</span><span>Expert</span></div>
-                                <div class="skill-bar"><div class="skill-progress" data-width="95%"></div></div>
+                <h2 class="font-heading text-3xl font-bold text-gradient text-center mb-12" data-aos="fade-up">Studi Kasus Proyek</h2>
+                <div class="space-y-16">
+                    <div class="grid md:grid-cols-2 gap-8 items-center" data-aos="fade-up">
+                        <div class="p-6 glass-card rounded-lg">
+                            <h3 class="font-heading text-2xl font-bold text-slate-100 mb-2">Backend Sistem Manajemen SDM</h3>
+                            <p class="text-slate-400 mb-4">Merancang API untuk aplikasi Human Resource Management, menangani data karyawan, absensi, cuti, dan penggajian dengan role-based access control (Admin, HR, Karyawan).</p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="tag">Laravel</span><span class="tag">MySQL</span><span class="tag">REST API</span><span class="tag">JWT Auth</span>
                             </div>
-                            <div>
-                                <div class="flex justify-between mb-1 text-slate-300"><span>Node.js & Express</span><span>Intermediate</span></div>
-                                <div class="skill-bar"><div class="skill-progress" data-width="70%"></div></div>
-                            </div>
-                             <div>
-                                <div class="flex justify-between mb-1 text-slate-300"><span>RESTful API Design</span><span>Advanced</span></div>
-                                <div class="skill-bar"><div class="skill-progress" data-width="90%"></div></div>
-                            </div>
+                            <a href="https://github.com/AndraZero121" class="interactive font-bold text-cyan-400 hover:text-cyan-300">Lihat di GitHub <i class="fas fa-arrow-right text-xs ml-1"></i></a>
+                        </div>
+                        <div class="p-4 bg-slate-800 rounded-lg">
+                            <code class="text-xs text-slate-400">// Contoh response API untuk detail karyawan<br>{<br>  "id": 1,<br>  "name": "Sorasaki Hina",<br>  "position": "Prefect Team Leader",<br>  "email": "hina@gehenna.ac.jp",<br>  "status": "Active"<br>}</code>
                         </div>
                     </div>
-                    
-                    <div class="glass-effect rounded-lg p-8" data-aos="fade-up" data-aos-delay="200">
-                        <h3 class="text-2xl font-bold mb-6 text-cyan-400"><i class="fas fa-database mr-3"></i>Database & Tools</h3>
-                        <div class="space-y-5">
-                            <div>
-                                <div class="flex justify-between mb-1 text-slate-300"><span>MySQL & MariaDB</span><span>Advanced</span></div>
-                                <div class="skill-bar"><div class="skill-progress" data-width="90%"></div></div>
+                     <div class="grid md:grid-cols-2 gap-8 items-center" data-aos="fade-up">
+                         <div class="p-4 bg-slate-800 rounded-lg order-last md:order-first">
+                             <code class="text-xs text-slate-400">// Struktur tabel 'projects'<br>Schema::create('projects', function (Blueprint $table) {<br>    $table->id();<br>    $table->string('project_name');<br>    $table->foreignId('client_id')->constrained();<br>    $table->date('start_date');<br>    $table->date('due_date');<br>    $table->enum('status', ['pending', 'in_progress', 'completed']);<br>});</code>
+                        </div>
+                        <div class="p-6 glass-card rounded-lg">
+                            <h3 class="font-heading text-2xl font-bold text-slate-100 mb-2">API Manajemen Proyek</h3>
+                            <p class="text-slate-400 mb-4">Membangun endpoint untuk mengelola proyek, tugas, dan timeline. Fokus pada relasi data yang kompleks dan kueri yang efisien untuk dashboard analitik.</p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="tag">PHP</span><span class="tag">Laravel</span><span class="tag">Database Design</span><span class="tag">Eloquent ORM</span>
                             </div>
-                            <div>
-                                <div class="flex justify-between mb-1 text-slate-300"><span>PostgreSQL</span><span>Intermediate</span></div>
-                                <div class="skill-bar"><div class="skill-progress" data-width="75%"></div></div>
-                            </div>
-                             <div>
-                                <div class="flex justify-between mb-1 text-slate-300"><span>Git & Docker</span><span>Intermediate</span></div>
-                                <div class="skill-bar"><div class="skill-progress" data-width="80%"></div></div>
-                            </div>
+                             <a href="https://github.com/AndraZero121" class="interactive font-bold text-cyan-400 hover:text-cyan-300">Lihat di GitHub <i class="fas fa-arrow-right text-xs ml-1"></i></a>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="projects" class="py-20">
-            <div class="container mx-auto px-6">
-                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12" data-aos="fade-up">
-                    <span class="text-gradient">Proyek Pilihan</span>
-                </h2>
-                <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                    <div class="project-card rounded-lg overflow-hidden" data-aos="fade-up">
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold mb-2 text-cyan-400">Sistem Kasir Modern</h3>
-                            <p class="text-slate-400 mb-4 text-sm leading-relaxed">Backend untuk aplikasi kasir dengan manajemen inventory, transaksi, dan pembuatan laporan penjualan. Dibangun dengan arsitektur yang solid untuk keandalan data.</p>
-                            <div class="flex flex-wrap gap-2">
-                                <span class="bg-slate-700 text-cyan-300 text-xs px-3 py-1 rounded-full font-medium">Laravel</span>
-                                <span class="bg-slate-700 text-cyan-300 text-xs px-3 py-1 rounded-full font-medium">MySQL</span>
-                                <span class="bg-slate-700 text-cyan-300 text-xs px-3 py-1 rounded-full font-medium">REST API</span>
-                            </div>
-                            <a href="https://github.com/AndraZero121/kasir" class="inline-block mt-4 text-cyan-400 hover:text-cyan-300 font-semibold">Lihat Kode <i class="fas fa-arrow-right text-xs ml-1"></i></a>
-                        </div>
-                    </div>
-                    
-                    <div class="project-card rounded-lg overflow-hidden" data-aos="fade-up" data-aos-delay="200">
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold mb-2 text-cyan-400">API Perpustakaan Digital</h3>
-                            <p class="text-slate-400 mb-4 text-sm leading-relaxed">Merancang dan membangun RESTful API untuk platform manajemen perpustakaan, menangani katalog buku, peminjaman, dan data pengguna secara aman.</p>
-                            <div class="flex flex-wrap gap-2">
-                                <span class="bg-slate-700 text-cyan-300 text-xs px-3 py-1 rounded-full font-medium">Laravel</span>
-                                <span class="bg-slate-700 text-cyan-300 text-xs px-3 py-1 rounded-full font-medium">Vue.js (Integration)</span>
-                                <span class="bg-slate-700 text-cyan-300 text-xs px-3 py-1 rounded-full font-medium">JWT Auth</span>
-                            </div>
-                            <a href="https://github.com/AndraZero121/perpustakaan" class="inline-block mt-4 text-cyan-400 hover:text-cyan-300 font-semibold">Lihat Kode <i class="fas fa-arrow-right text-xs ml-1"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="contact" class="py-20 text-center">
-            <div class="container mx-auto px-6">
-                 <h2 class="text-3xl md:text-4xl font-bold mb-4" data-aos="fade-up">
-                    <span class="text-gradient">Mari Berkolaborasi</span>
-                </h2>
-                <p class="max-w-xl mx-auto text-slate-400 mb-8" data-aos="fade-up" data-aos-delay="200">
-                    Punya ide proyek atau butuh seorang backend developer? Saya siap membantu.
-                </p>
-                <div data-aos="fade-up" data-aos-delay="400">
-                    <a href="mailto:diandraanursa@gmail.com" class="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-3 rounded-md font-semibold transition-all">
-                        Hubungi Saya
-                    </a>
-                </div>
-            </div>
-        </section>
     </main>
 
-    <footer class="bg-slate-900 py-6">
-        <div class="container mx-auto px-6 text-center text-slate-400 text-sm">
-            <p>© 2025 Diandra Anursa Syabandira. Dibangun dengan <i class="fas fa-heart text-red-500"></i> dan semangat ngoding.</p>
+    <footer class="py-16 text-center border-t border-slate-800">
+        <div class="container mx-auto px-6">
+            <h3 class="font-heading text-3xl font-bold text-slate-100">Punya Proyek dalam Pikiran?</h3>
+            <p class="text-slate-400 mt-2 mb-6">Mari kita wujudkan bersama.</p>
+            <a href="mailto:diandraanursa@gmail.com" class="interactive bg-cyan-400 hover:bg-cyan-500 text-slate-900 px-8 py-3 rounded-md font-bold transition-all shadow-lg shadow-cyan-500/20">
+                diandraanursa@gmail.com
+            </a>
+            <p class="text-xs text-slate-500 mt-12">© 2025 Diandra Anursa Syabandira. All rights reserved.</p>
         </div>
     </footer>
     
@@ -282,64 +216,61 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     <script>
-        // Inisialisasi AOS (Animate On Scroll)
-        AOS.init({
-            duration: 800,
-            once: true,
-            offset: 50
+        // --- POINTER ANIMATION ---
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        window.addEventListener('mousemove', (e) => {
+            const { clientX, clientY } = e;
+            gsap.to(cursorDot, { duration: 0.2, x: clientX, y: clientY });
+            gsap.to(cursorOutline, { duration: 0.6, x: clientX, y: clientY });
+        });
+        document.querySelectorAll('.interactive').forEach(el => {
+            el.addEventListener('mouseenter', () => cursorOutline.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursorOutline.classList.remove('hover'));
         });
 
-        // GSAP untuk Animasi Skill Bar
+        // --- THREE.JS BACKGROUND ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-bg'), alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 4000;
+        const posArray = new Float32Array(particlesCount * 3);
+        for (let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 12;
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({ size: 0.007, color: 0x1e293b, transparent: true, opacity: 0.8 });
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+        camera.position.z = 5;
+
+        let mouseX = 0;
+        document.addEventListener('mousemove', e => { mouseX = e.clientX; });
+
+        function animateParticles() {
+            requestAnimationFrame(animateParticles);
+            particlesMesh.rotation.y += -0.0001;
+            gsap.to(particlesMesh.rotation, { duration: 1, x: -(mouseY * 0.00005), y: particlesMesh.rotation.y + -(mouseX * 0.00005) });
+            renderer.render(scene, camera);
+        }
+        animateParticles();
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // --- SCROLL & ENTRY ANIMATIONS ---
+        AOS.init({ duration: 800, once: true, offset: 50 });
         gsap.registerPlugin(ScrollTrigger);
-        
-        gsap.utils.toArray('.skill-progress').forEach(bar => {
-            gsap.to(bar, {
-                scaleX: bar.dataset.width.replace('%', '') / 100,
-                duration: 1.5,
-                ease: 'power2.out',
-                scrollTrigger: {
-                    trigger: bar.closest('.glass-effect'),
-                    start: 'top 85%',
-                }
-            });
-        });
 
-        // Typing Animation
-        const typingElement = document.getElementById('typingText');
-        const typingTexts = [
-            'Backend Developer',
-            'Laravel Specialist',
-            'API Architect',
-            'Database Engineer'
-        ];
-        let textIndex = 0;
-        let charIndex = 0;
-
-        function typeWriter() {
-            if (charIndex < typingTexts[textIndex].length) {
-                typingElement.textContent += typingTexts[textIndex].charAt(charIndex);
-                charIndex++;
-                setTimeout(typeWriter, 70);
-            } else {
-                setTimeout(erase, 2000);
-            }
-        }
-
-        function erase() {
-            if (charIndex > 0) {
-                typingElement.textContent = typingTexts[textIndex].substring(0, charIndex - 1);
-                charIndex--;
-                setTimeout(erase, 40);
-            } else {
-                textIndex = (textIndex + 1) % typingTexts.length;
-                setTimeout(typeWriter, 500);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-             if (typingElement) {
-                setTimeout(typeWriter, 1000); // Mulai setelah delay singkat
-             }
+        // Navbar Animation
+        gsap.from(".navbar", {
+            y: -100,
+            duration: 0.5,
+            ease: "power2.out"
         });
 
     </script>
