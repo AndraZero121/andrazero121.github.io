@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diandra Anursa Syabandira - Backend Developer</title>
     
-    <!-- CDN Links -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -19,7 +19,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
         
         * {
             margin: 0;
@@ -28,10 +28,37 @@
         }
         
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #16213e 100%);
-            color: white;
+            font-family: 'Space Grotesk', sans-serif;
+            background: #00040f;
+            color: #e0e0e0;
             overflow-x: hidden;
+            cursor: none; /* Sembunyikan cursor default */
+        }
+
+        /* --- Custom Pointer --- */
+        .cursor-dot, .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+            transition: all 0.1s ease-out;
+        }
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #3b82f6;
+        }
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(59, 130, 246, 0.5);
+        }
+        .cursor-outline.hover {
+            transform: translate(-50%, -50%) scale(1.5);
+            background-color: rgba(59, 130, 246, 0.1);
         }
         
         .bg-gradient-custom {
@@ -39,20 +66,21 @@
         }
         
         .text-gradient {
-            background: linear-gradient(45deg, #60a5fa, #3b82f6, #1d4ed8);
+            background: linear-gradient(45deg, #60a5fa, #3b82f6, #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         
         .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(26, 26, 46, 0.5);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
         }
         
         .hover-glow:hover {
-            box-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
+            box-shadow: 0 0 25px rgba(96, 165, 250, 0.6);
             transform: translateY(-5px);
             transition: all 0.3s ease;
         }
@@ -66,37 +94,27 @@
             z-index: -1;
         }
         
-        .floating {
-            animation: floating 6s ease-in-out infinite;
-        }
-        
-        @keyframes floating {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        .typing-effect {
-            border-right: 2px solid #60a5fa;
+        .typing-effect::after {
+            content: '_';
             animation: blink 1s infinite;
+            color: #60a5fa;
         }
         
         @keyframes blink {
-            0%, 50% { border-color: #60a5fa; }
-            51%, 100% { border-color: transparent; }
+            50% { opacity: 0; }
         }
         
         .skill-bar {
-            position: relative;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             overflow: hidden;
         }
         
         .skill-progress {
-            height: 8px;
-            background: linear-gradient(90deg, #60a5fa, #3b82f6);
+            height: 10px;
+            background: linear-gradient(90deg, #8b5cf6, #3b82f6);
             border-radius: 10px;
-            transition: width 2s ease;
+            transform-origin: left;
         }
         
         .project-card {
@@ -107,93 +125,68 @@
         }
         
         .project-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-10px) scale(1.03);
             box-shadow: 0 20px 40px rgba(96, 165, 250, 0.2);
+            border-color: rgba(96, 165, 250, 0.5);
         }
-        
+
         .navbar {
             backdrop-filter: blur(20px);
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 4, 15, 0.5); /* Ubah warna background navbar */
             transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .navbar.scrolled {
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(0, 4, 15, 0.8);
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
         }
-        
-        .custom-alert {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(96, 165, 250, 0.9);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            z-index: 1000;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-        }
-        
-        .custom-alert.show {
-            transform: translateX(0);
-        }
-        
+
         .social-icon {
             transition: all 0.3s ease;
         }
         
         .social-icon:hover {
-            transform: scale(1.2) rotate(5deg);
+            transform: scale(1.2) rotate(-5deg);
             color: #60a5fa;
         }
         
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
         
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #1a1a2e;
-        }
-        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #00040f; }
         ::-webkit-scrollbar-thumb {
-            background: #60a5fa;
+            background: #3b82f6;
             border-radius: 4px;
         }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #3b82f6;
+        ::-webkit-scrollbar-thumb:hover { background: #60a5fa; }
+
+        /* Animasi tambahan */
+        .reveal-text {
+            clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
         }
     </style>
 </head>
 <body>
-    <!-- Three.js Background -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
     <canvas id="three-bg" class="three-bg"></canvas>
     
-    <!-- Custom Alert -->
-    <div id="customAlert" class="custom-alert">
-        <i class="fas fa-check-circle mr-2"></i>
-        <span id="alertMessage">Pesan berhasil dikirim!</span>
-    </div>
-    
-    <!-- Navigation -->
     <nav class="navbar fixed top-0 w-full z-50 px-6 py-4">
         <div class="container mx-auto flex justify-between items-center">
-            <div class="text-2xl font-bold text-gradient">
-                Diandra
+            <div class="text-2xl font-bold flex items-center">
+                <span class="text-3xl mr-2 text-blue-400">
+                    <i class="fas fa-code"></i>
+                </span>
+                <span class="text-gradient">Diandra</span>
             </div>
             <div class="hidden md:flex space-x-8">
-                <a href="#home" class="hover:text-blue-400 transition-colors">Home</a>
-                <a href="#about" class="hover:text-blue-400 transition-colors">About</a>
-                <a href="#skills" class="hover:text-blue-400 transition-colors">Skills</a>
-                <a href="#projects" class="hover:text-blue-400 transition-colors">Projects</a>
-                <a href="#contact" class="hover:text-blue-400 transition-colors">Contact</a>
+                <a href="#home" class="nav-link hover:text-blue-400 transition-colors">Home</a>
+                <a href="#about" class="nav-link hover:text-blue-400 transition-colors">About</a>
+                <a href="#skills" class="nav-link hover:text-blue-400 transition-colors">Skills</a>
+                <a href="#projects" class="nav-link hover:text-blue-400 transition-colors">Projects</a>
+                <a href="#contact" class="nav-link hover:text-blue-400 transition-colors">Contact</a>
             </div>
             <div class="md:hidden">
                 <button id="menuToggle" class="text-white">
@@ -203,51 +196,31 @@
         </div>
     </nav>
     
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-90 z-40 hidden">
-        <div class="flex flex-col justify-center items-center h-full space-y-8 text-xl">
-            <a href="#home" class="hover:text-blue-400 transition-colors" onclick="closeMobileMenu()">Home</a>
-            <a href="#about" class="hover:text-blue-400 transition-colors" onclick="closeMobileMenu()">About</a>
-            <a href="#skills" class="hover:text-blue-400 transition-colors" onclick="closeMobileMenu()">Skills</a>
-            <a href="#projects" class="hover:text-blue-400 transition-colors" onclick="closeMobileMenu()">Projects</a>
-            <a href="#contact" class="hover:text-blue-400 transition-colors" onclick="closeMobileMenu()">Contact</a>
-        </div>
-    </div>
-    
-    <!-- Hero Section -->
     <section id="home" class="min-h-screen flex items-center justify-center relative">
         <div class="container mx-auto px-6 text-center">
-            <div class="floating" data-aos="fade-up" data-aos-duration="1000">
-                <h1 class="text-5xl md:text-7xl font-bold mb-4">
+            <div data-aos="fade-up" data-aos-duration="1000">
+                <h1 class="text-5xl md:text-7xl font-bold mb-4 reveal-text">
                     Hi, I'm <span class="text-gradient">Diandra</span>
                 </h1>
-                <div class="text-xl md:text-2xl mb-8 typing-effect" id="typingText">
+                <div class="text-xl md:text-2xl mb-8 reveal-text" id="typingText">
                     Backend Developer Extraordinaire
                 </div>
-                <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto opacity-80">
-                    Passionate Backend Developer specializing in PHP Laravel, creating robust and scalable server-side solutions since 2020
+                <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto opacity-80 reveal-text">
+                    Passionate Backend Developer specializing in PHP Laravel, creating robust and scalable server-side solutions since 2020.
                 </p>
-                <div class="flex justify-center space-x-4 mb-8">
-                    <a href="#contact" class="bg-blue-500 hover:bg-blue-600 px-8 py-3 rounded-full font-semibold transition-all hover-glow">
+                <div class="flex justify-center space-x-4 mb-8" data-aos="fade-up" data-aos-delay="200">
+                    <a href="#contact" class="interactive bg-blue-500 hover:bg-blue-600 px-8 py-3 rounded-full font-semibold transition-all hover-glow">
                         Get In Touch
                     </a>
-                    <a href="#projects" class="border border-blue-500 hover:bg-blue-500 px-8 py-3 rounded-full font-semibold transition-all hover-glow">
+                    <a href="#projects" class="interactive border border-blue-500 hover:bg-blue-500 px-8 py-3 rounded-full font-semibold transition-all hover-glow">
                         View Projects
                     </a>
                 </div>
-                <div class="flex justify-center space-x-6">
-                    <a href="https://github.com/AndraZero121" class="social-icon text-2xl">
-                        <i class="fab fa-github"></i>
-                    </a>
-                    <a href="https://www.linkedin.com/in/diandraanursa/" class="social-icon text-2xl">
-                        <i class="fab fa-linkedin"></i>
-                    </a>
-                    <a href="https://www.instagram.com/andrazero121/" class="social-icon text-2xl">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://discord.gg/v597hVKRpm" class="social-icon text-2xl">
-                        <i class="fab fa-discord"></i>
-                    </a>
+                <div class="flex justify-center space-x-6" data-aos="fade-up" data-aos-delay="400">
+                    <a href="https://github.com/AndraZero121" class="interactive social-icon text-2xl"><i class="fab fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/diandraanursa/" class="interactive social-icon text-2xl"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://www.instagram.com/andrazero121/" class="interactive social-icon text-2xl"><i class="fab fa-instagram"></i></a>
+                    <a href="https://discord.gg/v597hVKRpm" class="interactive social-icon text-2xl"><i class="fab fa-discord"></i></a>
                 </div>
             </div>
         </div>
@@ -255,11 +228,10 @@
             <i class="fas fa-chevron-down text-2xl text-blue-400"></i>
         </div>
     </section>
-    
-    <!-- About Section -->
+
     <section id="about" class="py-20 bg-black bg-opacity-50">
         <div class="container mx-auto px-6">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 text-gradient" data-aos="fade-up">
+            <h2 class="section-title text-4xl md:text-5xl font-bold text-center mb-16 text-gradient">
                 About Me
             </h2>
             <div class="grid md:grid-cols-2 gap-12 items-center">
@@ -267,683 +239,247 @@
                     <div class="glass-effect rounded-2xl p-8 hover-glow">
                         <h3 class="text-2xl font-bold mb-4 text-blue-400">Who Am I?</h3>
                         <p class="text-lg mb-4 leading-relaxed">
-                            Saya Diandra Anursa Syabandira, seorang Backend Developer berusia 18 tahun yang passionate dalam dunia programming. 
-                            Saya memulai perjalanan coding pada tahun 2020 saat pandemi COVID-19 dan terus berkembang hingga sekarang.
+                            Saya Diandra Anursa Syabandira, seorang Backend Developer berusia 18 tahun yang passionate dalam dunia programming. Saya memulai perjalanan coding pada tahun 2020 dan terus berkembang hingga sekarang.
                         </p>
-                        <p class="text-lg mb-4 leading-relaxed">
-                            Saya adalah lulusan SMK yang kini bekerja sebagai programmer spesialis backend. 
-                            Keahlian utama saya adalah PHP dengan framework Laravel, namun saya juga menguasai JavaScript dan berbagai framework modern.
-                        </p>
-                        <p class="text-lg leading-relaxed">
+                         <p class="text-lg leading-relaxed">
                             Di luar coding, saya gemar menonton anime, membaca manga, bermain game, menyanyi, memasak, dan selalu excited untuk mencoba hal-hal baru!
                         </p>
                     </div>
                 </div>
                 <div data-aos="fade-left" data-aos-duration="1000">
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="glass-effect rounded-xl p-6 text-center hover-glow">
+                     <div class="grid grid-cols-2 gap-6">
+                        <div class="info-card glass-effect rounded-xl p-6 text-center hover-glow">
                             <i class="fas fa-code text-3xl text-blue-400 mb-3"></i>
                             <h4 class="font-bold text-xl mb-2">5+ Years</h4>
                             <p class="text-sm opacity-80">Coding Experience</p>
                         </div>
-                        <div class="glass-effect rounded-xl p-6 text-center hover-glow">
+                        <div class="info-card glass-effect rounded-xl p-6 text-center hover-glow">
                             <i class="fas fa-server text-3xl text-blue-400 mb-3"></i>
                             <h4 class="font-bold text-xl mb-2">Backend</h4>
                             <p class="text-sm opacity-80">Specialist</p>
                         </div>
-                        <div class="glass-effect rounded-xl p-6 text-center hover-glow">
-                            <i class="fas fa-database text-3xl text-blue-400 mb-3"></i>
-                            <h4 class="font-bold text-xl mb-2">Database</h4>
-                            <p class="text-sm opacity-80">Expert</p>
-                        </div>
-                        <div class="glass-effect rounded-xl p-6 text-center hover-glow">
-                            <i class="fas fa-api text-3xl text-blue-400 mb-3"></i>
-                            <h4 class="font-bold text-xl mb-2">API</h4>
-                            <p class="text-sm opacity-80">Developer</p>
-                        </div>
-                    </div>
+                     </div>
                 </div>
             </div>
         </div>
     </section>
-    
-    <!-- Skills Section -->
+
     <section id="skills" class="py-20">
         <div class="container mx-auto px-6">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 text-gradient" data-aos="fade-up">
+            <h2 class="section-title text-4xl md:text-5xl font-bold text-center mb-16 text-gradient">
                 Skills & Technologies
             </h2>
             <div class="grid md:grid-cols-3 gap-8">
-                <!-- Backend Skills -->
-                <div class="glass-effect rounded-2xl p-8 hover-glow" data-aos="fade-up" data-aos-delay="100">
-                    <h3 class="text-2xl font-bold mb-6 text-blue-400">
-                        <i class="fas fa-server mr-3"></i>Backend
-                    </h3>
+                <div class="skill-card glass-effect rounded-2xl p-8 hover-glow">
+                    <h3 class="text-2xl font-bold mb-6 text-blue-400"><i class="fas fa-server mr-3"></i>Backend</h3>
                     <div class="space-y-4">
                         <div>
-                            <div class="flex justify-between mb-2">
-                                <span>PHP & Laravel</span>
-                                <span>95%</span>
-                            </div>
-                            <div class="skill-bar">
-                                <div class="skill-progress" style="width: 95%"></div>
-                            </div>
+                            <div class="flex justify-between mb-2"><span>PHP & Laravel</span><span>95%</span></div>
+                            <div class="skill-bar"><div class="skill-progress" data-width="95%"></div></div>
                         </div>
                         <div>
-                            <div class="flex justify-between mb-2">
-                                <span>Node.js & Express</span>
-                                <span>85%</span>
-                            </div>
-                            <div class="skill-bar">
-                                <div class="skill-progress" style="width: 85%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between mb-2">
-                                <span>Python</span>
-                                <span>75%</span>
-                            </div>
-                            <div class="skill-bar">
-                                <div class="skill-progress" style="width: 75%"></div>
-                            </div>
+                            <div class="flex justify-between mb-2"><span>Node.js & Express</span><span>85%</span></div>
+                            <div class="skill-bar"><div class="skill-progress" data-width="85%"></div></div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Frontend Skills -->
-                <div class="glass-effect rounded-2xl p-8 hover-glow" data-aos="fade-up" data-aos-delay="200">
-                    <h3 class="text-2xl font-bold mb-6 text-blue-400">
-                        <i class="fas fa-palette mr-3"></i>Frontend
-                    </h3>
+                <div class="skill-card glass-effect rounded-2xl p-8 hover-glow">
+                    <h3 class="text-2xl font-bold mb-6 text-blue-400"><i class="fas fa-palette mr-3"></i>Frontend</h3>
                     <div class="space-y-4">
                         <div>
-                            <div class="flex justify-between mb-2">
-                                <span>React & Next.js</span>
-                                <span>80%</span>
-                            </div>
-                            <div class="skill-bar">
-                                <div class="skill-progress" style="width: 80%"></div>
-                            </div>
+                            <div class="flex justify-between mb-2"><span>JavaScript & TypeScript</span><span>90%</span></div>
+                            <div class="skill-bar"><div class="skill-progress" data-width="90%"></div></div>
                         </div>
-                        <div>
-                            <div class="flex justify-between mb-2">
-                                <span>Vue.js & Nuxt.js</span>
-                                <span>85%</span>
-                            </div>
-                            <div class="skill-bar">
-                                <div class="skill-progress" style="width: 85%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between mb-2">
-                                <span>JavaScript & TypeScript</span>
-                                <span>90%</span>
-                            </div>
-                            <div class="skill-bar">
-                                <div class="skill-progress" style="width: 90%"></div>
-                            </div>
+                         <div>
+                            <div class="flex justify-between mb-2"><span>Vue.js & Nuxt.js</span><span>85%</span></div>
+                            <div class="skill-bar"><div class="skill-progress" data-width="85%"></div></div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Database Skills -->
-                <div class="glass-effect rounded-2xl p-8 hover-glow" data-aos="fade-up" data-aos-delay="300">
-                    <h3 class="text-2xl font-bold mb-6 text-blue-400">
-                        <i class="fas fa-database mr-3"></i>Database
-                    </h3>
+                <div class="skill-card glass-effect rounded-2xl p-8 hover-glow">
+                    <h3 class="text-2xl font-bold mb-6 text-blue-400"><i class="fas fa-database mr-3"></i>Database</h3>
                     <div class="space-y-4">
                         <div>
-                            <div class="flex justify-between mb-2">
-                                <span>MySQL & MariaDB</span>
-                                <span>90%</span>
-                            </div>
-                            <div class="skill-bar">
-                                <div class="skill-progress" style="width: 90%"></div>
-                            </div>
+                            <div class="flex justify-between mb-2"><span>MySQL & MariaDB</span><span>90%</span></div>
+                            <div class="skill-bar"><div class="skill-progress" data-width="90%"></div></div>
                         </div>
                         <div>
-                            <div class="flex justify-between mb-2">
-                                <span>PostgreSQL</span>
-                                <span>80%</span>
-                            </div>
-                            <div class="skill-bar">
-                                <div class="skill-progress" style="width: 80%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between mb-2">
-                                <span>MongoDB</span>
-                                <span>75%</span>
-                            </div>
-                            <div class="skill-bar">
-                                <div class="skill-progress" style="width: 75%"></div>
-                            </div>
+                            <div class="flex justify-between mb-2"><span>PostgreSQL</span><span>80%</span></div>
+                            <div class="skill-bar"><div class="skill-progress" data-width="80%"></div></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    
-    <!-- Projects Section -->
+
     <section id="projects" class="py-20 bg-black bg-opacity-50">
         <div class="container mx-auto px-6">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 text-gradient" data-aos="fade-up">
+            <h2 class="section-title text-4xl md:text-5xl font-bold text-center mb-16 text-gradient">
                 Featured Projects
             </h2>
             <div class="owl-carousel owl-theme" id="projectCarousel">
-                <!-- Project 1 -->
-                <div class="project-card rounded-2xl p-8 mx-4">
-                    <div class="mb-6">
-                        <i class="fas fa-cash-register text-4xl text-blue-400 mb-4"></i>
-                        <h3 class="text-2xl font-bold mb-3">Sistem Kasir Modern</h3>
-                        <p class="text-gray-300 mb-4">
-                            Aplikasi kasir berbasis web dengan fitur lengkap untuk manajemen toko, 
-                            inventory, dan laporan penjualan real-time menggunakan Laravel dan MySQL.
-                        </p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="bg-blue-500 text-xs px-3 py-1 rounded-full">Laravel</span>
-                            <span class="bg-blue-500 text-xs px-3 py-1 rounded-full">MySQL</span>
-                            <span class="bg-blue-500 text-xs px-3 py-1 rounded-full">Bootstrap</span>
-                        </div>
-                        <div class="flex space-x-4">
-                            <a href="https://github.com/AndraZero121/kasir" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg text-sm transition-colors">
-                                <i class="fab fa-github mr-2"></i>View Code
-                            </a>
-                            <a href="#" class="border border-blue-500 hover:bg-blue-500 px-4 py-2 rounded-lg text-sm transition-colors">
-                                <i class="fas fa-external-link-alt mr-2"></i>Live Demo
-                            </a>
-                        </div>
+                <div class="project-card rounded-2xl p-8 mx-4 interactive">
+                    <i class="fas fa-cash-register text-4xl text-blue-400 mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-3">Sistem Kasir Modern</h3>
+                    <p class="text-gray-300 mb-4">Aplikasi kasir berbasis web dengan fitur lengkap untuk manajemen toko, inventory, dan laporan penjualan.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-blue-900 text-blue-300 text-xs px-3 py-1 rounded-full">Laravel</span>
+                        <span class="bg-blue-900 text-blue-300 text-xs px-3 py-1 rounded-full">MySQL</span>
+                    </div>
+                    <div class="flex space-x-4 mt-6">
+                        <a href="https://github.com/AndraZero121/kasir" class="interactive bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg text-sm transition-colors">View Code</a>
                     </div>
                 </div>
-                
-                <!-- Project 2 -->
-                <div class="project-card rounded-2xl p-8 mx-4">
-                    <div class="mb-6">
-                        <i class="fas fa-book text-4xl text-blue-400 mb-4"></i>
-                        <h3 class="text-2xl font-bold mb-3">Sistem Perpustakaan Digital</h3>
-                        <p class="text-gray-300 mb-4">
-                            Platform manajemen perpustakaan modern dengan fitur peminjaman online, 
-                            katalog digital, dan dashboard analitik untuk librarian.
-                        </p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="bg-blue-500 text-xs px-3 py-1 rounded-full">Laravel</span>
-                            <span class="bg-blue-500 text-xs px-3 py-1 rounded-full">Vue.js</span>
-                            <span class="bg-blue-500 text-xs px-3 py-1 rounded-full">PostgreSQL</span>
-                        </div>
-                        <div class="flex space-x-4">
-                            <a href="https://github.com/AndraZero121/perpustakaan" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg text-sm transition-colors">
-                                <i class="fab fa-github mr-2"></i>View Code
-                            </a>
-                            <a href="#" class="border border-blue-500 hover:bg-blue-500 px-4 py-2 rounded-lg text-sm transition-colors">
-                                <i class="fas fa-external-link-alt mr-2"></i>Live Demo
-                            </a>
-                        </div>
+                <div class="project-card rounded-2xl p-8 mx-4 interactive">
+                    <i class="fas fa-book text-4xl text-blue-400 mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-3">Sistem Perpustakaan Digital</h3>
+                    <p class="text-gray-300 mb-4">Platform manajemen perpustakaan modern dengan fitur peminjaman online dan katalog digital.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-blue-900 text-blue-300 text-xs px-3 py-1 rounded-full">Laravel</span>
+                        <span class="bg-blue-900 text-blue-300 text-xs px-3 py-1 rounded-full">Vue.js</span>
                     </div>
-                </div>
-                
-                <!-- Project 3 -->
-                <div class="project-card rounded-2xl p-8 mx-4">
-                    <div class="mb-6">
-                        <i class="fas fa-shopping-cart text-4xl text-blue-400 mb-4"></i>
-                        <h3 class="text-2xl font-bold mb-3">E-Commerce API</h3>
-                        <p class="text-gray-300 mb-4">
-                            RESTful API untuk e-commerce dengan fitur autentikasi JWT, payment gateway integration, 
-                            dan real-time notifications menggunakan Node.js dan Express.
-                        </p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="bg-blue-500 text-xs px-3 py-1 rounded-full">Node.js</span>
-                            <span class="bg-blue-500 text-xs px-3 py-1 rounded-full">Express</span>
-                            <span class="bg-blue-500 text-xs px-3 py-1 rounded-full">MongoDB</span>
-                        </div>
-                        <div class="flex space-x-4">
-                            <a href="#" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg text-sm transition-colors">
-                                <i class="fab fa-github mr-2"></i>View Code
-                            </a>
-                            <a href="#" class="border border-blue-500 hover:bg-blue-500 px-4 py-2 rounded-lg text-sm transition-colors">
-                                <i class="fas fa-external-link-alt mr-2"></i>API Docs
-                            </a>
-                        </div>
+                    <div class="flex space-x-4 mt-6">
+                        <a href="https://github.com/AndraZero121/perpustakaan" class="interactive bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg text-sm transition-colors">View Code</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    
-    <!-- Contact Section -->
-    <section id="contact" class="py-20">
-        <div class="container mx-auto px-6">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 text-gradient" data-aos="fade-up">
-                Get In Touch
-            </h2>
-            <div class="grid md:grid-cols-2 gap-12">
-                <div data-aos="fade-right" data-aos-duration="1000">
-                    <h3 class="text-2xl font-bold mb-6 text-blue-400">Let's Work Together</h3>
-                    <p class="text-lg mb-8 leading-relaxed">
-                        Saya selalu terbuka untuk proyek baru dan kolaborasi menarik. 
-                        Jika Anda memiliki ide atau project yang membutuhkan backend developer yang handal, 
-                        jangan ragu untuk menghubungi saya!
-                    </p>
-                    <div class="space-y-4">
-                        <div class="flex items-center space-x-4">
-                            <i class="fas fa-envelope text-blue-400 text-xl"></i>
-                            <span>diandraanursa@gmail.com</span>
-                        </div>
-                        <div class="flex items-center space-x-4">
-                            <i class="fas fa-phone text-blue-400 text-xl"></i>
-                            <span>+62 812-3456-7890</span>
-                        </div>
-                        <div class="flex items-center space-x-4">
-                            <i class="fas fa-map-marker-alt text-blue-400 text-xl"></i>
-                            <span>Semarang, Indonesia</span>
-                        </div>
-                    </div>
-                    <div class="flex space-x-6 mt-8">
-                        <a href="https://github.com/AndraZero121" class="social-icon text-2xl">
-                            <i class="fab fa-github"></i>
-                        </a>
-                        <a href="https://www.linkedin.com/in/diandraanursa/" class="social-icon text-2xl">
-                            <i class="fab fa-linkedin"></i>
-                        </a>
-                        <a href="https://www.instagram.com/andrazero121/" class="social-icon text-2xl">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="https://discord.gg/v597hVKRpm" class="social-icon text-2xl">
-                            <i class="fab fa-discord"></i>
-                        </a>
-                    </div>
-                </div>
-                <div data-aos="fade-left" data-aos-duration="1000">
-                    <form id="contactForm" class="glass-effect rounded-2xl p-8 space-y-6">
-                        <div>
-                            <label class="block text-sm font-medium mb-2">Pesan</label>
-                            <textarea name="message" required rows="5" class="w-full px-4 py-3 bg-white bg-opacity-10 border border-white border-opacity-20 rounded-lg focus:outline-none focus:border-blue-400 transition-colors resize-none"></textarea>
-                        </div>
-                        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 py-3 rounded-lg font-semibold transition-colors hover-glow">
-                            <i class="fas fa-paper-plane mr-2"></i>
-                            Kirim Pesan
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Footer -->
-    <footer class="bg-black bg-opacity-80 py-8">
+
+    <footer class="bg-black bg-opacity-80 py-8 mt-20">
         <div class="container mx-auto px-6 text-center">
-            <div class="mb-6">
-                <h3 class="text-2xl font-bold text-gradient mb-2">Diandra Anursa Syabandira</h3>
-                <p class="text-gray-400">Backend Developer | Laravel Specialist</p>
-            </div>
-            <div class="flex justify-center space-x-6 mb-6">
-                <a href="https://github.com/AndraZero121" class="social-icon text-xl">
-                    <i class="fab fa-github"></i>
-                </a>
-                <a href="https://www.linkedin.com/in/diandraanursa/" class="social-icon text-xl">
-                    <i class="fab fa-linkedin"></i>
-                </a>
-                <a href="https://www.instagram.com/andrazero121/" class="social-icon text-xl">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="https://discord.gg/v597hVKRpm" class="social-icon text-xl">
-                    <i class="fab fa-discord"></i>
-                </a>
-                <a href="https://saweria.co/AndraZero121" class="social-icon text-xl">
-                    <i class="fas fa-coffee"></i>
-                </a>
-            </div>
             <div class="border-t border-gray-700 pt-6">
                 <p class="text-gray-400 text-sm">
                     © 2025 Diandra Anursa Syabandira. Made with ❤️ and lots of ☕
                 </p>
-                <p class="text-gray-500 text-xs mt-2">
+                 <p class="text-gray-500 text-xs mt-2">
                     "It's not a bug – it's an undocumented feature." - AndraZero121
                 </p>
             </div>
         </div>
     </footer>
     
-    <!-- Back to Top Button -->
-    <button id="backToTop" class="fixed bottom-8 right-8 bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full shadow-lg transition-all opacity-0 invisible hover-glow">
-        <i class="fas fa-chevron-up"></i>
-    </button>
-
     <script>
-        // Initialize AOS
-        AOS.init({
-            duration: 1000,
-            once: true
+        AOS.init({ duration: 1000, once: true });
+
+        // --- Custom Pointer ---
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        window.addEventListener('mousemove', (e) => {
+            const { clientX, clientY } = e;
+            cursorDot.style.left = `${clientX}px`;
+            cursorDot.style.top = `${clientY}px`;
+            cursorOutline.style.left = `${clientX}px`;
+            cursorOutline.style.top = `${clientY}px`;
         });
-        
-        // Three.js Background
+        document.querySelectorAll('.interactive, a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => cursorOutline.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursorOutline.classList.remove('hover'));
+        });
+
+        // --- Three.js Background ---
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-bg'), alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         
-        // Create particles
         const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 5000;
+        const particlesCount = 7000;
         const posArray = new Float32Array(particlesCount * 3);
-        
         for (let i = 0; i < particlesCount * 3; i++) {
-            posArray[i] = (Math.random() - 0.5) * 5;
+            posArray[i] = (Math.random() - 0.5) * 10;
         }
-        
         particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        
-        const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.005,
-            color: 0x60a5fa
-        });
-        
+        const particlesMaterial = new THREE.PointsMaterial({ size: 0.005, color: 0x3b82f6 });
         const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
         scene.add(particlesMesh);
-        
-        camera.position.z = 2;
-        
-        // Animation loop
+        camera.position.z = 5;
+
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', e => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
         function animate() {
             requestAnimationFrame(animate);
-            particlesMesh.rotation.x += 0.0005;
-            particlesMesh.rotation.y += 0.0005;
+            particlesMesh.rotation.y += -0.0001;
+            if (mouseX > 0) {
+                 particlesMesh.rotation.x = -mouseY * 0.00005;
+                 particlesMesh.rotation.y += -mouseX * 0.00005;
+            }
             renderer.render(scene, camera);
         }
         animate();
-        
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-        
-        // Typing animation
-        const typingTexts = [
-            'Backend Developer Extraordinaire',
-            'Laravel Specialist',
-            'API Architecture Expert',
-            'Database Design Guru',
-            'Full-Stack Enthusiast'
-        ];
-        
-        let textIndex = 0;
-        let charIndex = 0;
-        let isDeleting = false;
-        const typingElement = document.getElementById('typingText');
-        
-        function typeWriter() {
-            const currentText = typingTexts[textIndex];
-            
-            if (isDeleting) {
-                typingElement.textContent = currentText.substring(0, charIndex - 1);
-                charIndex--;
-            } else {
-                typingElement.textContent = currentText.substring(0, charIndex + 1);
-                charIndex++;
-            }
-            
-            let typeSpeed = isDeleting ? 30 : 50;
-            
-            if (!isDeleting && charIndex === currentText.length) {
-                typeSpeed = 2000;
-                isDeleting = true;
-            } else if (isDeleting && charIndex === 0) {
-                isDeleting = false;
-                textIndex = (textIndex + 1) % typingTexts.length;
-                typeSpeed = 500;
-            }
-            
-            setTimeout(typeWriter, typeSpeed);
-        }
-        
-        typeWriter();
-        
-        // Navbar scroll effect
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 100) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-            
-            // Back to top button
-            const backToTop = document.getElementById('backToTop');
-            if (window.scrollY > 300) {
-                backToTop.classList.remove('opacity-0', 'invisible');
-                backToTop.classList.add('opacity-100', 'visible');
-            } else {
-                backToTop.classList.add('opacity-0', 'invisible');
-                backToTop.classList.remove('opacity-100', 'visible');
-            }
-        });
-        
-        // Back to top functionality
-        document.getElementById('backToTop').addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-        
-        // Mobile menu toggle
-        const menuToggle = document.getElementById('menuToggle');
-        const mobileMenu = document.getElementById('mobileMenu');
-        
-        menuToggle.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-        
-        function closeMobileMenu() {
-            mobileMenu.classList.add('hidden');
-        }
-        
-        // Initialize Owl Carousel
-        $(document).ready(function(){
-            $('#projectCarousel').owlCarousel({
-                loop: true,
-                margin: 20,
-                nav: true,
-                dots: true,
-                autoplay: true,
-                autoplayTimeout: 5000,
-                responsive: {
-                    0: { items: 1 },
-                    768: { items: 2 },
-                    1024: { items: 3 }
-                },
-                navText: ['<i class="fas fa-chevron-left"></i>', '<i class="fas fa-chevron-right"></i>']
-            });
-        });
-        
-        // Custom Alert Function
-        function showAlert(message, type = 'success') {
-            const alert = document.getElementById('customAlert');
-            const alertMessage = document.getElementById('alertMessage');
-            
-            alertMessage.textContent = message;
-            alert.classList.add('show');
-            
-            setTimeout(() => {
-                alert.classList.remove('show');
-            }, 3000);
-        }
-        
-        // Contact form submission
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form data
-            const formData = new FormData(this);
-            const name = formData.get('name');
-            const email = formData.get('email');
-            const subject = formData.get('subject');
-            const message = formData.get('message');
-            
-            // Simple validation
-            if (!name || !email || !subject || !message) {
-                showAlert('Mohon lengkapi semua field!', 'error');
-                return;
-            }
-            
-            // Simulate form submission
-            showAlert(`Terima kasih ${name}! Pesan Anda berhasil dikirim. Saya akan segera membalas.`);
-            
-            // Reset form
-            this.reset();
-            
-            // Add some animation
-            anime({
-                targets: '#contactForm',
-                scale: [1, 0.98, 1],
-                duration: 300,
-                easing: 'easeOutQuad'
-            });
-        });
-        
-        // GSAP Animations
+
+        // --- GSAP Animations ---
         gsap.registerPlugin(ScrollTrigger);
-        
-        // Animate skill bars on scroll
+
+        // Animasi Teks Hero
+        gsap.from(".reveal-text", {
+            y: 100,
+            opacity: 0,
+            clipPath: 'polygon(0 100%, 100% 100%, 100% 100%, 0% 100%)',
+            stagger: 0.2,
+            duration: 1,
+            ease: "power3.out",
+            delay: 0.5
+        });
+
+        // Animasi Judul Section Saat di-scroll
+        gsap.utils.toArray('.section-title').forEach(title => {
+            gsap.from(title, {
+                opacity: 0,
+                y: 50,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: title,
+                    start: 'top 85%',
+                    end: 'bottom 20%',
+                    toggleActions: 'play none none reverse'
+                }
+            });
+        });
+
+        // Animasi Skill Bar Saat di-scroll
         gsap.utils.toArray('.skill-progress').forEach(bar => {
             gsap.fromTo(bar, 
-                { width: '0%' },
+                { scaleX: 0 },
                 {
-                    width: bar.style.width,
-                    duration: 2,
+                    scaleX: 1,
+                    duration: 1.5,
                     ease: 'power2.out',
                     scrollTrigger: {
-                        trigger: bar,
+                        trigger: bar.closest('.skill-card'),
                         start: 'top 80%',
-                        end: 'bottom 20%',
-                        toggleActions: 'play none none reverse'
                     }
                 }
             );
         });
         
-        // Parallax effect for hero section
-        gsap.to('.floating', {
-            y: -50,
-            duration: 2,
-            ease: 'power2.inOut',
-            repeat: -1,
-            yoyo: true
-        });
-        
-        // Project cards hover animation
-        document.querySelectorAll('.project-card').forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                anime({
-                    targets: card,
-                    scale: 1.05,
-                    duration: 300,
-                    easing: 'easeOutQuad'
-                });
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                anime({
-                    targets: card,
-                    scale: 1,
-                    duration: 300,
-                    easing: 'easeOutQuad'
-                });
-            });
-        });
-        
-        // Smooth scroll for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+        // Animasi Info Card
+        gsap.utils.toArray('.info-card').forEach(card => {
+             gsap.from(card, {
+                opacity: 0,
+                scale: 0.8,
+                y: 50,
+                stagger: 0.2,
+                duration: 0.8,
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 90%',
                 }
             });
         });
-        
-        // Add loading animation
-        window.addEventListener('load', () => {
-            // Hide loading screen if you had one
-            document.body.style.overflow = 'auto';
-            
-            // Animate elements on load
-            anime.timeline()
-                .add({
-                    targets: '.floating',
-                    opacity: [0, 1],
-                    translateY: [50, 0],
-                    duration: 1000,
-                    easing: 'easeOutQuad'
-                });
-        });
-        
-        // Add scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
+
+        // Owl Carousel
+        $(document).ready(function(){
+            $('#projectCarousel').owlCarousel({
+                loop: true, margin: 20, nav: false, dots: true, autoplay: true,
+                responsive: { 0: { items: 1 }, 768: { items: 2 } }
             });
-        }, observerOptions);
-        
-        // Observe elements for scroll animations
-        document.querySelectorAll('.glass-effect, .project-card').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(30px)';
-            el.style.transition = 'all 0.6s ease';
-            observer.observe(el);
         });
-        
-        // Easter egg - Konami code
-        let konamiCode = [];
-        const konami = [
-            'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
-            'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
-            'KeyB', 'KeyA'
-        ];
-        
-        document.addEventListener('keydown', (e) => {
-            konamiCode.push(e.code);
-            konamiCode = konamiCode.slice(-konami.length);
-            
-            if (konamiCode.join('') === konami.join('')) {
-                showAlert('🎮 Konami Code activated! You found the easter egg!');
-                // Add some fun animation
-                anime({
-                    targets: 'body',
-                    rotate: [0, 360],
-                    duration: 1000,
-                    easing: 'easeInOutQuad'
-                });
-            }
-        });
-        
-        // Performance optimization
-        let ticking = false;
-        
-        function updateScrollEffects() {
-            // Update scroll-based animations here
-            ticking = false;
-        }
-        
-        function requestTick() {
-            if (!ticking) {
-                requestAnimationFrame(updateScrollEffects);
-                ticking = true;
-            }
-        }
-        
-        window.addEventListener('scroll', requestTick);
     </script>
 </body>
 </html>
